@@ -10,6 +10,25 @@ import SessionReport from '../components/SessionReport';
 import { Orchestrator } from '../agents/orchestrator';
 import { saveSession } from '../utils/sessionStorage';
 
+const dsCurriculum = {
+  "DA Phase (Data Analyst)": {
+    "Basic Maths": ["Percentage, Ratio & Proportion", "Profit & Loss", "Linear Equations(LA)", "Quadratic Equations", "Set, Relations & Functions", "Basics of Probability", "Permutations and Combinations", "Conditional Probability", "Bayes Theorem", "Statistics", "Descriptive Statistics", "Measures of central tendency", "Measures of Variability"],
+    "Spreadsheet": ["Basic of Data", "Introduction to Excel and Google Sheets", "Charts and Visualization", "Data Aggregation", "Pivot Charts", "Dashboarding", "Filters and Slicers", "Data Formatting", "Lookup functions", "What if Analysis"],
+    "SQL": ["Introduction to Data & Databases", "Entities & Relations", "Types of Commands", "Filtering", "Wildcard operators", "Joins", "Subqueries", "Views", "Functions", "Windows Functions in SQL", "Window Frames", "Stored Procedures"],
+    "Power BI": ["Introduction to PowerBI", "Power Query Editor", "MQuery", "Data Modeling", "Filter context", "Data Transformation", "Calculations and measures", "Different Charts", "AI-based Visualization", "Dashboarding", "Group BY Aggregation", "DAX", "RLS"]
+  },
+  "BA Phase (Business Analyst)": {
+    "Python": ["Introduction to Programming", "Strings", "Control statements", "Lists and Tuples", "List comprehension", "Sets and Dictionaries", "Python Functions", "Recursion", "Searching and Sorting", "Lambda Function", "File handling", "Exception handling", "Oops"],
+    "Python EDA 1": ["Python EDA (Exploratory Data Analysis)", "Basics of Probability", "Discrete and Continuous Probability distributions", "Probability Distribution Functions", "Expected Value", "Sampling methodologies", "Central Limit Theorem", "Hypothesis Testing", "Z-test and t-test", "AB Testing", "Power Analysis"],
+    "Python EDA 2": ["Numpy", "Pandas", "Matplotlib", "Seaborn", "Plotly", "Regex (Regular Expressions)", "Web Scraping using Selenium", "API"]
+  },
+  "DS Phase (Data Scientist)": {
+    "Supervised ML": ["Machine learning basics", "Simple Linear Regression", "Multi Linear Regression", "Logistic Regression", "KNN (k Nearest Neighbors)", "Naive Bayes", "SVM and its Kernels", "Decision Trees", "Ensemble Methods"],
+    "Unsupervised ML": ["K-means", "Hierarchical clustering", "GMM", "DBSCAN", "Anomaly and Outlier Detection", "Dimensionality Reduction", "Recommendation System", "Time Series Forecasting (ARIMA models)"],
+    "ML Ops": ["Github", "Self-serving apps using Streamlit", "Flask and FastAPI", "Docker and containerization", "Deployment of containers on the cloud"]
+  }
+};
+
 export default function InterviewMode() {
   const [step, setStep] = useState(1); // 1: Setup, 2: Interview, 3: Report
   const [type, setType] = useState('HR Interview');
@@ -18,6 +37,10 @@ export default function InterviewMode() {
   const [voice, setVoice] = useState('Diego');
   const [dsLevel, setDsLevel] = useState('Fresher / DA Level');
   const [topicFocus, setTopicFocus] = useState(null);
+
+  const [selectedPhase, setSelectedPhase] = useState("");
+  const [selectedModule, setSelectedModule] = useState("");
+  const [selectedTopic, setSelectedTopic] = useState("");
   
   const [cvSummary, setCvSummary] = useState(null);
   
@@ -84,8 +107,15 @@ export default function InterviewMode() {
       }
     });
 
+    let finalTopicFocus = topicFocus;
+    if (type === 'Data Science & Analytics') {
+      if (selectedTopic) finalTopicFocus = `${selectedPhase} -> ${selectedModule} -> ${selectedTopic}`;
+      else if (selectedModule) finalTopicFocus = `${selectedPhase} -> ${selectedModule}`;
+      else if (selectedPhase) finalTopicFocus = `${selectedPhase}`;
+    }
+
     orchestrator.current.setMode('interview', {
-      type, company, role, voice, cvSummary, dsLevel, topicFocus
+      type, company, role, voice, cvSummary, dsLevel, topicFocus: finalTopicFocus
     });
     
     await orchestrator.current.startInterview();
@@ -202,27 +232,45 @@ export default function InterviewMode() {
       )}
 
       {type === 'Data Science & Analytics' && (
-        <div className="mb-8 animate-fade-in">
-          <label className="block text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">Experience Level</label>
-          <div className="flex flex-wrap gap-3">
-            {['Fresher / DA Level', 'Mid Level / BA Level', 'Senior / DS Level', 'Full Stack DS'].map(level => (
-              <button
-                key={level}
-                onClick={() => setDsLevel(level)}
-                className={`px-4 py-2 rounded-full border text-sm font-bold transition-all ${
-                  dsLevel === level 
-                    ? 'bg-nvidia/20 border-nvidia text-nvidia' 
-                    : 'bg-gray-800 border-gray-700 text-gray-400 hover:border-gray-500 hover:text-gray-200'
-                }`}
-              >
-                {level}
-              </button>
-            ))}
+        <div className="mb-8 animate-fade-in bg-gray-800/30 p-6 rounded-xl border border-gray-700">
+          <label className="block text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Curriculum Topic Selection</label>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+             {/* Phase Dropdown */}
+             <select 
+               className="w-full bg-gray-900 border border-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-nvidia"
+               value={selectedPhase} 
+               onChange={(e) => { setSelectedPhase(e.target.value); setSelectedModule(""); setSelectedTopic(""); }}
+             >
+               <option value="">Select Phase (Optional)</option>
+               {Object.keys(dsCurriculum).map(phase => <option key={phase} value={phase}>{phase}</option>)}
+             </select>
+
+             {/* Module Dropdown */}
+             <select 
+               className="w-full bg-gray-900 border border-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-nvidia"
+               value={selectedModule} 
+               onChange={(e) => { setSelectedModule(e.target.value); setSelectedTopic(""); }}
+               disabled={!selectedPhase}
+             >
+               <option value="">Select Module (Optional)</option>
+               {selectedPhase && Object.keys(dsCurriculum[selectedPhase]).map(mod => <option key={mod} value={mod}>{mod}</option>)}
+             </select>
+
+             {/* Topic Dropdown */}
+             <select 
+               className="w-full bg-gray-900 border border-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-nvidia"
+               value={selectedTopic} 
+               onChange={(e) => setSelectedTopic(e.target.value)}
+               disabled={!selectedModule}
+             >
+               <option value="">Select Specific Topic (Optional)</option>
+               {selectedModule && dsCurriculum[selectedPhase][selectedModule].map(top => <option key={top} value={top}>{top}</option>)}
+             </select>
           </div>
         </div>
       )}
 
-      {topicMap[type] && (
+      {type !== 'Data Science & Analytics' && topicMap[type] && (
         <div className="mb-8 animate-fade-in">
           <label className="block text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">Interview Topic Focus (Optional)</label>
           <div className="flex flex-wrap gap-3">
