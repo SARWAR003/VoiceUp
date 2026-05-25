@@ -18,6 +18,7 @@ export class SpeechAgent {
   async startListening() {
     try {
       this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      this.hasSpoken = false; // Reset spoken flag
       this.onStateChange('listening');
       this.audioChunks = [];
       
@@ -104,16 +105,17 @@ export class SpeechAgent {
       const average = sum / dataArray.length;
       this.onVolumeChange(dataArray);
 
-      if (average < 10) { // Silence threshold
-        if (!this.silenceTimer) {
-          this.silenceTimer = setTimeout(() => {
-            this.stopListening();
-          }, 1000); // 1 second of silence
-        }
-      } else {
+      if (average > 10) {
+        this.hasSpoken = true;
         if (this.silenceTimer) {
           clearTimeout(this.silenceTimer);
           this.silenceTimer = null;
+        }
+      } else if (average < 10 && this.hasSpoken) {
+        if (!this.silenceTimer) {
+          this.silenceTimer = setTimeout(() => {
+            this.stopListening();
+          }, 2000); // 2 seconds of silence AFTER speaking
         }
       }
       
