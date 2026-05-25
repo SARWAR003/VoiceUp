@@ -103,6 +103,24 @@ export default function SessionReport({ report, onRetry }) {
         </div>
       )}
 
+      {report.detailedAnswers && report.detailedAnswers.length > 0 && (
+        <div className="mb-8 animate-fade-in">
+          <h3 className="text-xl font-bold text-white mb-6">Detailed Answer Key</h3>
+          <div className="space-y-6">
+            {report.detailedAnswers.map((item, index) => (
+              <div key={index} className="bg-gray-800/50 border border-gray-700 rounded-2xl p-6">
+                <div className="text-gray-400 text-sm font-bold uppercase tracking-wider mb-2">Question {index + 1}</div>
+                <div className="text-lg font-medium text-white mb-4">{item.question}</div>
+                <div className="bg-gray-900/80 rounded-xl p-4 border border-gray-800">
+                  <div className="text-green-400 text-sm font-bold uppercase tracking-wider mb-2">Model Answer & Examples</div>
+                  <div className="text-gray-300 text-sm whitespace-pre-wrap">{item.correctAnswer}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="flex justify-center gap-4">
         <button 
           onClick={onRetry}

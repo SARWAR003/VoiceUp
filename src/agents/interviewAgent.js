@@ -95,7 +95,13 @@ After question 5 set sessionComplete true and add:
     "weakestArea": "Weakest technical area to study",
     "strongestArea": "Strongest technical area",
     "nextStudyTopics": ["topic 1", "topic 2"],
-    "summary": "3 sentence overall assessment"
+    "summary": "3 sentence overall assessment",
+    "detailedAnswers": [
+      {
+        "question": "The exact question you asked",
+        "correctAnswer": "A highly detailed, correct answer with examples or code snippets if applicable"
+      }
+    ]
   }
 
 Start with warm greeting and first question as plain text (no JSON for the opening message).`;
@@ -127,7 +133,13 @@ After question 5 set sessionComplete true and add:
     "hiringDecision": "Strong Yes" | "Yes" | "Maybe" | "No",
     "strengths": ["strength 1", "strength 2", "strength 3"],
     "improvements": ["area 1", "area 2", "area 3"],
-    "summary": "3 sentence overall assessment"
+    "summary": "3 sentence overall assessment",
+    "detailedAnswers": [
+      {
+        "question": "The exact question you asked",
+        "correctAnswer": "A highly detailed, correct answer with examples if applicable"
+      }
+    ]
   }
 
 Start with warm greeting and first question as plain text (no JSON for the opening message).`;

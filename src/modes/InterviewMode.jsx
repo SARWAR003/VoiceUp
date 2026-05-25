@@ -51,6 +51,7 @@ export default function InterviewMode() {
   const [transcript, setTranscript] = useState("");
   const [feedback, setFeedback] = useState(null);
   const [report, setReport] = useState(null);
+  const [currentQuestionText, setCurrentQuestionText] = useState("");
   
   const orchestrator = useRef(null);
   const autoListen = useRef(true);
@@ -173,11 +174,19 @@ export default function InterviewMode() {
           ))}
         </div>
 
-        <div className="text-center mb-8 h-12 flex items-center justify-center">
+        <div className="text-center mb-6 h-12 flex items-center justify-center">
           {state === 'processing' && <span className="text-nvidia animate-pulse">Interviewer is thinking...</span>}
           {state === 'speaking' && <span className="text-blue-400 animate-pulse">Interviewer is speaking...</span>}
           {state === 'listening' && <span className="text-red-400 animate-pulse">Listening...</span>}
         </div>
+
+        {currentQuestionText && (
+          <div className="w-full max-w-3xl mb-8 text-center animate-fade-in bg-gray-800/50 p-6 rounded-2xl border border-gray-700 shadow-lg">
+             <h3 className="text-xl md:text-2xl font-medium text-white leading-relaxed">
+               "{currentQuestionText}"
+             </h3>
+          </div>
+        )}
 
         <div className="mb-12">
           <MicButton state={state} onClick={handleMicClick} />
