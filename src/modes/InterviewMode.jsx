@@ -74,6 +74,8 @@ export default function InterviewMode() {
       orchestrator.current.startListening();
     } else if (state === 'listening') {
       orchestrator.current.stopListening();
+    } else if (state === 'speaking') {
+      orchestrator.current.stopSpeaking();
     }
   };
 

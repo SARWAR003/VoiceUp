@@ -31,7 +31,7 @@ export default function MicButton({ state, onClick }) {
   return (
     <button
       onClick={onClick}
-      disabled={state === 'processing' || state === 'speaking'}
+      disabled={state === 'processing'}
       className={`w-32 h-32 rounded-full flex items-center justify-center border-4 transition-all duration-300 ${getStyles()}`}
     >
       {getIcon()}

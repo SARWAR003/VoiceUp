@@ -44,6 +44,10 @@ export class Orchestrator {
     this.speechAgent.stopListening();
   }
 
+  stopSpeaking() {
+    this.speechAgent.stopSpeaking();
+  }
+
   async handleTranscript(result) {
     this.callbacks.onTranscript(result);
     

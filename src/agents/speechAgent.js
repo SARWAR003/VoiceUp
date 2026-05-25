@@ -77,6 +77,19 @@ export class SpeechAgent {
     }
   }
 
+  stopSpeaking() {
+    if (this.currentAudio) {
+      this.currentAudio.pause();
+      this.currentAudio.currentTime = 0;
+      this.currentAudio = null;
+    }
+    // Also cancel Web Speech API if it was running
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+    this.onStateChange('idle');
+  }
+
   monitorSilence() {
     const dataArray = new Uint8Array(this.analyser.frequencyBinCount);
     
@@ -115,7 +128,15 @@ export class SpeechAgent {
     try {
       const audio = await nvidiaRivaTTS(text, voice, emotion);
       if (audio) {
-        audio.onended = () => this.onStateChange('idle');
+        this.currentAudio = audio; // Keep strong reference to prevent GC
+        audio.onended = () => {
+          this.onStateChange('idle');
+          this.currentAudio = null;
+        };
+        audio.onerror = () => {
+          this.onStateChange('idle');
+          this.currentAudio = null;
+        };
       } else {
         this.onStateChange('idle');
       }
