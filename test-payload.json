@@ -1,0 +1,5 @@
+{
+  "model": "playai-tts",
+  "input": "test text",
+  "voice": "Arista-PlayAI"
+}

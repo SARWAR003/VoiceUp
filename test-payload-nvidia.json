@@ -1,0 +1,5 @@
+{
+  "model": "magpie-tts-multilingual",
+  "input": "test text",
+  "voice": "Mia"
+}
