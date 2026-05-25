@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { HashRouter, Routes, Route, Link } from 'react-router-dom';
 import { Mic2, MessageSquare, BarChart3 } from 'lucide-react';
 import CoachMode from './modes/CoachMode';
 import InterviewMode from './modes/InterviewMode';
@@ -6,7 +6,7 @@ import Dashboard from './modes/Dashboard';
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <div className="min-h-screen bg-gray-950 flex flex-col">
         {/* App Header */}
         <header className="sticky top-0 z-50 glass-card mx-4 mt-4 mb-6 px-6 py-4 flex items-center justify-between">
@@ -44,7 +44,7 @@ function App() {
           </Routes>
         </main>
       </div>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
