@@ -1,4 +1,4 @@
-import{d as o,b as n,e as c}from"./index-Cogfil7w.js";async function s(a){const t=await n(`You are a CV analysis expert. 
+import{d as o,b as n,e as c}from"./index-Vjrn_WGb.js";async function s(a){const t=await n(`You are a CV analysis expert. 
   Analyze the CV and return ONLY this JSON, no extra text:
   {
     "name": "",
