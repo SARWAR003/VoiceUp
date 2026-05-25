@@ -61,6 +61,14 @@ export class Orchestrator {
       return;
     }
 
+    const cleanText = result.text.trim().toLowerCase().replace(/[^a-z\s]/g, '');
+    const hallucinations = ['thank you', 'thanks for watching', 'thank you for watching', 'subscribe', 'bye'];
+    if (hallucinations.includes(cleanText)) {
+      console.log("Ignored Whisper hallucination:", result.text);
+      this.callbacks.onStateChange('idle');
+      return;
+    }
+
     const durationSeconds = result.duration || 5; // Fallback to 5 if undefined
     
     if (this.mode === 'coach') {

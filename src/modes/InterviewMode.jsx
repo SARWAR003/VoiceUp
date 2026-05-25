@@ -26,6 +26,7 @@ export default function InterviewMode() {
   const [report, setReport] = useState(null);
   
   const orchestrator = useRef(null);
+  const autoListen = useRef(true);
 
   const types = [
     { id: 'HR Interview', icon: <Users />, label: 'HR & Culture' },
@@ -42,14 +43,25 @@ export default function InterviewMode() {
     setTranscript("");
     setFeedback(null);
     setReport(null);
+    autoListen.current = true;
     
     orchestrator.current = new Orchestrator({
       onVolumeChange: () => {}, // simplified
-      onStateChange: setState,
+      onStateChange: (newState) => {
+        setState(newState);
+        if (newState === 'idle' && autoListen.current) {
+          setTimeout(() => {
+            if (autoListen.current && orchestrator.current) {
+              orchestrator.current.startListening();
+            }
+          }, 500);
+        }
+      },
       onTranscript: (res) => setTranscript(res.text),
       onInterviewFeedback: (res) => {
         setFeedback(res);
         if (res.sessionComplete && res.report) {
+          autoListen.current = false;
           setReport(res.report);
           saveSession({
             type: 'interview',
@@ -71,10 +83,13 @@ export default function InterviewMode() {
 
   const handleMicClick = () => {
     if (state === 'idle') {
+      autoListen.current = true;
       orchestrator.current.startListening();
     } else if (state === 'listening') {
+      autoListen.current = false;
       orchestrator.current.stopListening();
     } else if (state === 'speaking') {
+      autoListen.current = false;
       orchestrator.current.stopSpeaking();
     }
   };
