@@ -26,6 +26,9 @@ const dsCurriculum = {
     "Supervised ML": ["Machine learning basics", "Simple Linear Regression", "Multi Linear Regression", "Logistic Regression", "KNN (k Nearest Neighbors)", "Naive Bayes", "SVM and its Kernels", "Decision Trees", "Ensemble Methods"],
     "Unsupervised ML": ["K-means", "Hierarchical clustering", "GMM", "DBSCAN", "Anomaly and Outlier Detection", "Dimensionality Reduction", "Recommendation System", "Time Series Forecasting (ARIMA models)"],
     "ML Ops": ["Github", "Self-serving apps using Streamlit", "Flask and FastAPI", "Docker and containerization", "Deployment of containers on the cloud"]
+  },
+  "FSDS Phase (Full Stack DS)": {
+    "Deep Learning": ["Neurons", "Neural Networks", "MLP", "Activation Functions", "TensorFlow and Keras", "Callbacks", "RNN", "LSTM", "NLP", "CV"]
   }
 };
 
