@@ -20,7 +20,7 @@ export class Orchestrator {
   setMode(mode, options = {}) {
     this.mode = mode;
     if (mode === 'interview') {
-      this.interviewAgent = new InterviewAgent(options.type, options.company, options.role, options.cvSummary, options.dsLevel);
+      this.interviewAgent = new InterviewAgent(options.type, options.company, options.role, options.cvSummary, options.dsLevel, options.topicFocus);
       this.currentVoice = options.voice || "Diego";
     } else {
       this.currentVoice = "Mia";

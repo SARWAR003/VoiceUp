@@ -17,6 +17,7 @@ export default function InterviewMode() {
   const [role, setRole] = useState('Senior Engineer');
   const [voice, setVoice] = useState('Diego');
   const [dsLevel, setDsLevel] = useState('Fresher / DA Level');
+  const [topicFocus, setTopicFocus] = useState(null);
   
   const [cvSummary, setCvSummary] = useState(null);
   
@@ -37,6 +38,15 @@ export default function InterviewMode() {
     { id: 'CV-Based Interview', icon: <Briefcase />, label: 'CV-Based' },
     { id: 'Data Science & Analytics', icon: <LineChart />, label: 'Data Science' },
   ];
+
+  const topicMap = {
+    'Technical Interview': ['React / Frontend', 'Node.js / Backend', 'System Design', 'DevOps / Cloud', 'Data Structures & Algorithms'],
+    'Data Science & Analytics': ['SQL & Databases', 'Machine Learning', 'Python & Pandas', 'Statistics & Probability', 'Data Visualization'],
+    'HR Interview': ['Cultural Fit', 'Conflict Resolution', 'Career Goals', 'Strengths & Weaknesses'],
+    'Behavioural Interview': ['STAR Method Scenarios', 'Leadership Experience', 'Handling Failure', 'Time Management'],
+    'Sales Interview': ['B2B Tech Sales', 'Objection Handling', 'Cold Calling', 'Account Executive Mock'],
+    'Leadership Interview': ['Team Management', 'Strategic Vision', 'Cross-functional Collaboration', 'Performance Reviews']
+  };
 
   const handleStart = async () => {
     setStep(2);
@@ -75,7 +85,7 @@ export default function InterviewMode() {
     });
 
     orchestrator.current.setMode('interview', {
-      type, company, role, voice, cvSummary, dsLevel
+      type, company, role, voice, cvSummary, dsLevel, topicFocus
     });
     
     await orchestrator.current.startInterview();
@@ -167,7 +177,10 @@ export default function InterviewMode() {
         {types.map(t => (
           <button
             key={t.id}
-            onClick={() => setType(t.id)}
+            onClick={() => {
+              setType(t.id);
+              setTopicFocus(null);
+            }}
             className={`p-4 rounded-xl border flex flex-col items-center text-center transition-all ${type === t.id ? 'bg-nvidia/10 border-nvidia text-nvidia shadow-sm shadow-nvidia/20' : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:border-gray-500 hover:text-gray-200'}`}
           >
             <div className="mb-2">{t.icon}</div>
@@ -203,6 +216,37 @@ export default function InterviewMode() {
                 }`}
               >
                 {level}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {topicMap[type] && (
+        <div className="mb-8 animate-fade-in">
+          <label className="block text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">Interview Topic Focus (Optional)</label>
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={() => setTopicFocus(null)}
+              className={`px-4 py-2 rounded-full border text-sm font-bold transition-all ${
+                !topicFocus
+                  ? 'bg-nvidia/20 border-nvidia text-nvidia'
+                  : 'bg-gray-800 border-gray-700 text-gray-400 hover:border-gray-500 hover:text-gray-200'
+              }`}
+            >
+              All Topics (Mixed)
+            </button>
+            {topicMap[type].map(topic => (
+              <button
+                key={topic}
+                onClick={() => setTopicFocus(topic)}
+                className={`px-4 py-2 rounded-full border text-sm font-bold transition-all ${
+                  topicFocus === topic
+                    ? 'bg-nvidia/20 border-nvidia text-nvidia' 
+                    : 'bg-gray-800 border-gray-700 text-gray-400 hover:border-gray-500 hover:text-gray-200'
+                }`}
+              >
+                {topic}
               </button>
             ))}
           </div>

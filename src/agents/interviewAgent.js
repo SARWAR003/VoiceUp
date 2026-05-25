@@ -2,12 +2,13 @@ import { groqLLM } from '../api/groqClient';
 import { extractJSON } from '../utils/jsonHelper';
 
 export class InterviewAgent {
-  constructor(type = "HR Interview", company = "Acme Corp", role = "Software Engineer", cvSummary = null, dsLevel = null) {
+  constructor(type = "HR Interview", company = "Acme Corp", role = "Software Engineer", cvSummary = null, dsLevel = null, topicFocus = null) {
     this.type = type;
     this.company = company;
     this.role = role;
     this.cvSummary = cvSummary;
     this.dsLevel = dsLevel;
+    this.topicFocus = topicFocus;
     this.questionNumber = 0;
     this.history = [];
   }
@@ -130,6 +131,10 @@ After question 5 set sessionComplete true and add:
   }
 
 Start with warm greeting and first question as plain text (no JSON for the opening message).`;
+    }
+
+    if (this.topicFocus) {
+      systemPrompt += `\n\nCRITICAL INSTRUCTION: The candidate explicitly wants this interview to focus purely on: ${this.topicFocus}. Do NOT ask questions outside of this topic. Tailor all technical and situational questions strictly to ${this.topicFocus}.`;
     }
 
     if (this.cvSummary) {
