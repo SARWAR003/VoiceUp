@@ -93,8 +93,9 @@ export class SpeechAgent {
 
   monitorSilence() {
     const dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+    let lastVolumeTime = 0;
     
-    const checkVolume = () => {
+    const checkVolume = (timestamp) => {
       if (!this.analyser || !this.stream || this.mediaRecorder?.state === 'inactive') return;
       
       this.analyser.getByteFrequencyData(dataArray);
@@ -103,7 +104,12 @@ export class SpeechAgent {
         sum += dataArray[i];
       }
       const average = sum / dataArray.length;
-      this.onVolumeChange(dataArray);
+      
+      // Throttle UI volume updates to ~20 FPS (50ms) to prevent severe React re-render lag
+      if (!lastVolumeTime || timestamp - lastVolumeTime > 50) {
+        this.onVolumeChange(dataArray);
+        lastVolumeTime = timestamp;
+      }
 
       if (average > 10) {
         this.hasSpoken = true;
@@ -115,14 +121,14 @@ export class SpeechAgent {
         if (!this.silenceTimer) {
           this.silenceTimer = setTimeout(() => {
             this.stopListening();
-          }, 2000); // 2 seconds of silence AFTER speaking
+          }, 2500); // 2.5 seconds of silence AFTER speaking
         }
       }
       
       requestAnimationFrame(checkVolume);
     };
     
-    checkVolume();
+    requestAnimationFrame(checkVolume);
   }
 
   async speak(text, voice = "Mia", emotion = "Neutral") {
